@@ -1,8 +1,11 @@
 import urllib.request
+from bs4 import BeautifulSoup
 
 url = "https://codeforces.com/contest/1/submission/165594039#program-source-text.html"
+html = urllib.request.urlopen(url).read()
 
-fhand = urllib.request.urlopen(url)
-f = open("output.txt", "wb")
-# for line in fhand:
-f.write(fhand.read())
+with open("output.txt", "wb") as f:
+    f.write(html)
+
+soup = BeautifulSoup(html, "html.parser")
+tags = soup('pre')

@@ -1,11 +1,17 @@
 import urllib.request
+import collections
+collections.Callable = collections.abc.Callable
 from bs4 import BeautifulSoup
-
-url = "https://codeforces.com/contest/1/submission/165594039#program-source-text.html"
+contestId = input("Enter the contest id: ") or "1"
+submissionId = input("Enter your submission id: ") or "165594039"
+url = "https://codeforces.com/contest/" + contestId + "/submission/" + submissionId
+print('Retrieving the code form ' + url + '\n...')
 html = urllib.request.urlopen(url).read()
-
-with open("output.txt", "wb") as f:
-    f.write(html)
+print('...')
 
 soup = BeautifulSoup(html, "html.parser")
-tags = soup('pre')
+for tag in soup('pre'):
+    if tag.attrs.get('id') == 'program-source-text':
+        content = tag.contents[0]
+print(content)
+        

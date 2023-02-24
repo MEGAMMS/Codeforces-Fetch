@@ -1,16 +1,15 @@
 import json
 import urllib.request
 import sys
+import os
 from bs4 import BeautifulSoup
 
 
 def getCode(contestId, submissionId):
-    url = "https://codeforces.com/contest/" + \
-        contestId + "/submission/" + submissionId
+    url = "https://codeforces.com/contest/" + contestId + "/submission/" + submissionId
     print('Retrieving the code form ' + url + '\n...')
     try:
         html = urllib.request.urlopen(url).read()
-        print('...')
     except:
         print("Error in retrieval")
         return
@@ -22,19 +21,22 @@ def getCode(contestId, submissionId):
     return content
 
 
-contestId = input("Enter the contest id: ") or "1791"
 handle = input("Enter your handle: ") or "MEGAMMS"
 
-url = "https://codeforces.com/api/contest.status?contestId=" + \
-    contestId + "&handle=" + handle
-
+urlApi = "https://codeforces.com/api/user.status?handle=" + handle
+print('Calling codeforces api...')
 try:
-    jf = urllib.request.urlopen(url).read()
+    jf = urllib.request.urlopen(urlApi).read()
 except:
     print("Error in retrieval")
     sys.exit()
 
 
+path = os.path.join(os.getcwd(),"Subs")
+
+os.makedirs(path,exist_ok = True)
+
 info = json.loads(jf)
 for sub in info["result"]:
-    print(getCode(str(sub["contestId"]), str(sub["id"])))
+    with open(path + "\\" + str(sub["id"])+ ".txt",'w') as file:
+        file.write(getCode(str(sub["contestId"]), str(sub["id"])))

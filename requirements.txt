@@ -1,2 +1,1 @@
-python
-BeautifulSoup https://pypi.python.org/pypi/beautifulsoup4
+beautifulsoup4==4.11.2

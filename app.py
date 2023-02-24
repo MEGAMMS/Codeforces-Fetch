@@ -1,12 +1,8 @@
 import json
-import collections
 import urllib.request
 import sys
-import os.path
-sys.path.append(os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '..')) + '/lib/')
-collections.Callable = collections.abc.Callable
 from bs4 import BeautifulSoup
+
 
 def getCode(contestId, submissionId):
     url = "https://codeforces.com/contest/" + \

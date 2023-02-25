@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 def getCode(contestId, submissionId):
     url = "https://codeforces.com/contest/" + contestId + "/submission/" + submissionId
-    print('Retrieving the code form ' + url + '\n...')
+    print('Retrieving the code form ' + url)
     try:
         html = urllib.request.urlopen(url).read()
     except:
@@ -33,10 +33,21 @@ except:
 
 
 path = os.path.join(os.getcwd(),"Subs")
-
 os.makedirs(path,exist_ok = True)
 
 info = json.loads(jf)
-for sub in info["result"]:
-    with open(path + "\\" + str(sub["id"])+ ".txt",'w') as file:
-        file.write(getCode(str(sub["contestId"]), str(sub["id"])))
+print("There is",len(info["result"]),"submission to retrieve")
+
+for i,sub in enumerate(info["result"]):
+    filePath = path + "\\" + str(sub["id"])+ ".txt"
+    print(i+1,end="- ")
+    if(os.path.isfile(filePath)):
+        print(str(sub["id"]),"in the dir")
+        continue
+    try:
+        Code = getCode(str(sub["contestId"]), str(sub["id"]))
+    except:
+        print("Failed!")
+        continue
+    with open(filePath, 'w', encoding="utf-8") as file:
+        file.write(Code)

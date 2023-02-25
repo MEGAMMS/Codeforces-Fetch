@@ -4,7 +4,8 @@ import sys
 import os
 from bs4 import BeautifulSoup
 
-
+MAXERROR = 5
+errorCnt = 0
 def getCode(contestId, submissionId):
     url = "https://codeforces.com/contest/" + contestId + "/submission/" + submissionId
     print('Retrieving the code form ' + url)
@@ -39,15 +40,17 @@ info = json.loads(jf)
 print("There is",len(info["result"]),"submission to retrieve")
 
 for i,sub in enumerate(info["result"]):
+    if(errorCnt >= MAXERROR):sys.exit()
     filePath = path + "\\" + str(sub["id"])+ ".txt"
     print(i+1,end="- ")
     if(os.path.isfile(filePath)):
-        print(str(sub["id"]),"in the dir")
+        print(str(sub["id"]),"is already in the dir.")
         continue
     try:
-        Code = getCode(str(sub["contestId"]), str(sub["id"]))
+        Code = getCode(str(sub["contestId"]), str(sub["id"])).replace("\r\n","\n").replace("\r","\n")
     except:
         print("Failed!")
+        errorCnt += 1
         continue
     with open(filePath, 'w', encoding="utf-8") as file:
         file.write(Code)

@@ -1,3 +1,5 @@
 .vscode/
 
 Subs/
+
+__pycache__/

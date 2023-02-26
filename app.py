@@ -1,48 +1,29 @@
 import json
-import urllib.request
 import sys
 import os
-from bs4 import BeautifulSoup
+from cf_fetch import getCode, callApi
+
 
 MAXERROR = 5
 errorCnt = 0
-def getCode(contestId, submissionId):
-    url = "https://codeforces.com/contest/" + contestId + "/submission/" + submissionId
-    print('Retrieving the code form ' + url)
-    try:
-        html = urllib.request.urlopen(url).read()
-    except:
-        print("Error in retrieval")
-        return
-
-    soup = BeautifulSoup(html, "html.parser")
-    for tag in soup('pre'):
-        if tag.attrs.get('id') == 'program-source-text':
-            content = tag.contents[0]
-    return content
 
 
 handle = input("Enter your handle: ") or "MEGAMMS"
+info = callApi(handle)
 
-urlApi = "https://codeforces.com/api/user.status?handle=" + handle
-print('Calling codeforces api...')
-try:
-    jf = urllib.request.urlopen(urlApi).read()
-except:
-    print("Error in retrieval")
-    sys.exit()
-
+print("There is", len(info["result"]),"submission to retrieve")
 
 path = os.path.join(os.getcwd(),"Subs")
 os.makedirs(path,exist_ok = True)
 
-info = json.loads(jf)
-print("There is",len(info["result"]),"submission to retrieve")
+with open("programmingLanguages.json","r") as file:
+    extinctions = json.loads(file.read())
 
-for i,sub in enumerate(info["result"]):
+
+for i,sub in enumerate(info["result"],start=1):
     if(errorCnt >= MAXERROR):sys.exit()
-    filePath = path + "\\" + str(sub["id"])+ ".txt"
-    print(i+1,end="- ")
+    filePath = path + "\\" + str(sub["id"]) + "." + extinctions[sub.get("programmingLanguage", "txt")]
+    print(i,end=" - ")
     if(os.path.isfile(filePath)):
         print(str(sub["id"]),"is already in the dir.")
         continue

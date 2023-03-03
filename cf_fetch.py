@@ -12,7 +12,6 @@ def getCode(contestId, submissionId):
     except:
         print("Error in retrieval")
         return
-
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup('pre'):
         if tag.attrs.get('id') == 'program-source-text':
@@ -25,6 +24,9 @@ def callApi(handle):
     print('Calling codeforces API...')
     try:
         jsonFile = urllib.request.urlopen(urlApi)
+    except urllib.error.HTTPError:
+        print("Wrong Handle.")
+        sys.exit()
     except:
         print("Error in retrieval")
         sys.exit()
